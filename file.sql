@@ -36,36 +36,8 @@ CREATE TABLE `Account` (
 
 LOCK TABLES `Account` WRITE;
 /*!40000 ALTER TABLE `Account` DISABLE KEYS */;
+INSERT INTO `Account` VALUES ('elsa1999','pass_elsa','elsa@gmail.com'),('eva1999','pass_eva','eva@gmail.com'),('john1999','pass_john','john@gmail.com'),('mina','mina','mina@gmail.com'),('nana1999','pass_nana','nana@gmail.com'),('pan1999','pass_pan','pan@gmail.com');
 /*!40000 ALTER TABLE `Account` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `Chracter`
---
-
-DROP TABLE IF EXISTS `Chracter`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Chracter` (
-  `Cname` varchar(255) NOT NULL,
-  `Occupation` varchar(255) DEFAULT NULL,
-  `Speed` int DEFAULT NULL,
-  `HP` int DEFAULT NULL,
-  `MP` int DEFAULT NULL,
-  `Power` int DEFAULT NULL,
-  `Anumber` varchar(255) DEFAULT NULL,
-  `Gname` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Cname`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `Chracter`
---
-
-LOCK TABLES `Chracter` WRITE;
-/*!40000 ALTER TABLE `Chracter` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Chracter` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -119,6 +91,35 @@ LOCK TABLES `Pet` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `Role`
+--
+
+DROP TABLE IF EXISTS `Role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `Role` (
+  `Cname` varchar(255) NOT NULL,
+  `Occupation` varchar(255) DEFAULT NULL,
+  `Speed` int DEFAULT NULL,
+  `HP` int DEFAULT NULL,
+  `MP` int DEFAULT NULL,
+  `Power` int DEFAULT NULL,
+  `Anumber` varchar(255) DEFAULT NULL,
+  `Gname` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`Cname`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Role`
+--
+
+LOCK TABLES `Role` WRITE;
+/*!40000 ALTER TABLE `Role` DISABLE KEYS */;
+/*!40000 ALTER TABLE `Role` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `Task`
 --
 
@@ -152,4 +153,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-06 17:31:51
+-- Dump completed on 2021-06-07  0:57:21

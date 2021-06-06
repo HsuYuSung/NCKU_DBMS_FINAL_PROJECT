@@ -1,3 +1,4 @@
+from logging import getLevelName
 from os import O_NDELAY
 import sys
 import mysql.connector
@@ -8,14 +9,14 @@ from mysql.connector import Error
 
 try:
 
-    cnx = mysql.connector.connect(user='root',
+    mydb = mysql.connector.connect(user='root',
                                 host='127.0.0.1',
                                 password='database_2021',
                                 database='database_game')
-    if cnx.is_connected():
-        db_Info = cnx.get_server_info()
+    if mydb.is_connected():
+        db_Info = mydb.get_server_info()
         print("Connected to MySQL Server version ", db_Info)
-        cursor = cnx.cursor()
+        cursor = mydb.cursor()
         cursor.execute("select database();")
         record = cursor.fetchone()
         print("You're connected to database: ", record)
@@ -23,7 +24,7 @@ except Error as e:
     print("Error while connecting to MySQL", e)
 
 
-mycursor = cnx.cursor()
+mycursor = mydb.cursor()
 
 # sql = "INSERT INTO Account (Account_number, Password, Email) VALUES (%s, %s, %s)"
 # # val = [
@@ -72,15 +73,66 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             print(i)
 
     def create_account(self):
-        sql = "INSERT INTO Account ()"
-        print("create account")
+        sql = "INSERT INTO Account (Account_number, Password, Email) VALUES (%s, %s, %s)"
+        account_number = self.lineEdit_8.text()
+        password = self.lineEdit_7.text()
+        email = self.lineEdit_9.text()
+        val = (account_number, password, email)
+        try:
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except:
+            print("Duplicate entry " + val[0] + ", please change")
+
+        print(mycursor.rowcount, "record inserted.")
 
     def create_character(self):
+        account_number = self.lineEdit_19.text()
+        try:
+            sql = f"SELECT * FROM Account WHERE Account_number='{account_number}'"
+            mycursor.execute(sql)
+            myresult = mycursor.fetchall()
+            print(myresult)
+        except:
+            print("please create account")
+
+        print("access account successful")
         cname = self.lineEdit.text()
         occupation = self.lineEdit_2.text()
-        sql = "INSERT INTO account ()"
-        print(cname, occupation)
-    
+
+        if occupation == 'warrior':
+            Speed = '800'
+            HP = '2000'
+            MP = '800'
+            Power = '2000'
+        elif occupation == 'mage':
+            Speed = '1000'
+            HP = '1000'
+            MP = '2000'
+            Power = '600'
+        elif occupation == 'assassin':
+            Speed = '2000'
+            HP = '1600'
+            MP = '1200'
+            Power = '700'
+        else:
+            Speed = '100'
+            HP = '100'
+            MP = '100'
+            Power = '100'
+
+        Gname = 'noob'
+        try:
+            sql = "INSERT INTO  Role (Cname, Occupation, Speed, HP, MP, Power, \
+            Anumber, Gname) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
+            val = (cname, occupation, Speed, HP, MP, Power, account_number, Gname)
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except:
+            print("insert failed")
+
+        print(mycursor.rowcount, "record inserted.")
+
     def check_task(self):
         task_str = 0
         try:
