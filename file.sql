@@ -73,7 +73,7 @@ DROP TABLE IF EXISTS `Pet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Pet` (
-  `Pid` int NOT NULL,
+  `Pid` int NOT NULL AUTO_INCREMENT,
   `Pname` varchar(255) DEFAULT NULL,
   `Hungry` int DEFAULT NULL,
   `Cname` varchar(255) DEFAULT NULL,
@@ -116,6 +116,7 @@ CREATE TABLE `Role` (
 
 LOCK TABLES `Role` WRITE;
 /*!40000 ALTER TABLE `Role` DISABLE KEYS */;
+INSERT INTO `Role` VALUES ('mina_second','pee',100,100,100,100,'mina','noob'),('mina_wolf','assassin',100,100,100,100,'mina','noob');
 /*!40000 ALTER TABLE `Role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -127,7 +128,7 @@ DROP TABLE IF EXISTS `Task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `Task` (
-  `Tid` int NOT NULL,
+  `Tid` int NOT NULL AUTO_INCREMENT,
   `Tname` varchar(255) DEFAULT NULL,
   `Reward` int DEFAULT NULL,
   `Cname` varchar(255) DEFAULT NULL,
@@ -153,4 +154,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-07  0:57:21
+-- Dump completed on 2021-06-07  9:59:43

@@ -70,7 +70,7 @@ p, li { white-space: pre-wrap; }
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -362,7 +362,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>229</x>
-        <y>85</y>
+        <y>11</y>
         <width>121</width>
         <height>41</height>
        </rect>
@@ -375,20 +375,20 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>18</x>
-        <y>96</y>
+        <y>120</y>
         <width>60</width>
         <height>16</height>
        </rect>
       </property>
       <property name="text">
-       <string>任務編號</string>
+       <string>任務名稱</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_3">
       <property name="geometry">
        <rect>
         <x>86</x>
-        <y>94</y>
+        <y>117</y>
         <width>113</width>
         <height>21</height>
        </rect>
@@ -398,7 +398,7 @@ p, li { white-space: pre-wrap; }
       <property name="geometry">
        <rect>
         <x>229</x>
-        <y>161</y>
+        <y>51</y>
         <width>121</width>
         <height>41</height>
        </rect>
@@ -427,30 +427,56 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>寵物編號</string>
+       <string>寵物名字</string>
       </property>
      </widget>
      <widget class="QLabel" name="label_34">
       <property name="geometry">
        <rect>
-        <x>20</x>
-        <y>38</y>
-        <width>60</width>
-        <height>16</height>
+        <x>5</x>
+        <y>20</y>
+        <width>81</width>
+        <height>20</height>
        </rect>
       </property>
       <property name="text">
-       <string>輸入帳號</string>
+       <string>輸入角色名字</string>
       </property>
      </widget>
      <widget class="QLineEdit" name="lineEdit_32">
       <property name="geometry">
        <rect>
         <x>88</x>
-        <y>36</y>
+        <y>20</y>
         <width>113</width>
         <height>21</height>
        </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_8">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>108</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>建立任務</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_9">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>160</y>
+        <width>121</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>豢養寵物</string>
       </property>
      </widget>
     </widget>
@@ -475,6 +501,16 @@ p, li { white-space: pre-wrap; }
       <y>341</y>
       <width>751</width>
       <height>251</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QTableWidget" name="tableWidget">
+    <property name="geometry">
+     <rect>
+      <x>45</x>
+      <y>351</y>
+      <width>721</width>
+      <height>231</height>
      </rect>
     </property>
    </widget>

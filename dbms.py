@@ -4,7 +4,7 @@ import sys
 import mysql.connector
 from gui import Ui_MainWindow
 from PyQt5 import QtWidgets, QtCore
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem, QTableWidget
 from mysql.connector import Error
 
 try:
@@ -41,19 +41,54 @@ mycursor = mydb.cursor()
 # mycursor.execute("SELECT * FROM account")
 # myresult = mycursor.fetchall()
 
-# for i in myresult:
-#     print(i)
+
+# Insert Tasks
+# Tname = 'task2'
+# Reward = '100'
+# Cname = 'mina'
+# sql = "INSERT INTO Task (Tname, Reward, Cname) \
+#     VALUES (%s, %s, %s)"
+# val = (Tname, Reward, Cname)
+# mycursor.execute(sql, val)
+
+# mydb.commit()
+# print("1 record inserted, ID:", mycursor.lastrowid)
+
+# Insert Pet
+# Pname = 'pet1'
+# Hungry = '100'
+# Cname = 'mina'
+# sql = "INSERT INTO Pet (Pname, Hungry, Cname) \
+#     VALUES (%s, %s, %s)"
+# val = (Pname, Hungry, Cname)
+
+# mycursor.execute(sql, val)
+
+# mydb.commit()
+# print("1 record inserted, ID:", mycursor.lastrowid)
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.on_binding_ui()
-        self.change_name()
+
     
-    def change_name(self):
-        self.tab.setWindowTitle('gogo')
-        self.tab_2.setWindowTitle('check')
+    def set_table_widget(self, data, attr_names):
+        self.tableWidget.setRowCount(len(data))
+        if (len(data) == 0):
+            pass
+        else:
+            self.tableWidget.setColumnCount(len(data[0]))
+
+        for row in range(len(data)):
+            for col in range(len(data[row])):
+                newitem = QTableWidgetItem(str(data[row][col]))
+                self.tableWidget.setItem(row, col, newitem)
+
+        self.tableWidget.setHorizontalHeaderLabels(attr_names)
+
 
     def on_binding_ui(self):
         self.pushButton.clicked.connect(self.sql_input)
@@ -134,23 +169,48 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         print(mycursor.rowcount, "record inserted.")
 
     def check_task(self):
-        task_str = 0
-        try:
-            task_str = self.lineEdit_3.text()
-            task_id = int(task_str)
-        except:
-            print("please input integer")
-        print(task_id)
+        # task_str = 0
+        # try:
+        #     task_str = self.lineEdit_3.text()
+        #     task_id = int(task_str)
+        # except:
+        #     print("please input integer")
+        cname = self.lineEdit_32.text()
+
+        sql = "SHOW COLUMNS FROM Task"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        attr_names = []
+        # print(myresult)
+        for i in myresult:
+            attr_names.append(i[0])
+
+
+        mycursor.execute(f"SELECT * FROM Task WHERE Cname = '{cname}'")
+        myresult = mycursor.fetchall()
+        self.set_table_widget(myresult, attr_names)
+        
+
 
     def check_pet(self):
-        pet_str = 0
-        try:
-            pet_str = self.lineEdit_4.text()
-            pet_id = int(pet_str)
-        except:
-            print("please input integer")
+        # pet_str = 0
+        # try:
+        #     pet_str = self.lineEdit_4.text()
+        #     pet_id = int(pet_str)
+        # except:
+        #     print("please input integer")
+        cname = self.lineEdit_32.text()
+        sql = "SHOW COLUMNS FROM Pet"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        attr_names = []
+        # print(myresult)
+        for i in myresult:
+            attr_names.append(i[0])
 
-        print(pet_str)
+        mycursor.execute(f"SELECT * FROM Pet WHERE Cname = '{cname}'")
+        myresult = mycursor.fetchall()
+        self.set_table_widget(myresult, attr_names)
 
     def create_guild(self):
         print('create_guild')
