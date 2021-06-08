@@ -175,34 +175,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # except:
         #     print("please input integer")
         cname = self.lineEdit_32.text()
-
-        sql = "SHOW COLUMNS FROM Task"
-        mycursor.execute(sql)
-        myresult = mycursor.fetchall()
-        attr_names = []
-        for i in myresult:
-            attr_names.append(i[0])
-
-
         mycursor.execute(f"SELECT * FROM Task WHERE Cname = '{cname}'")
+        column_names = [i[0] for i in mycursor.description]
+
         myresult = mycursor.fetchall()
-        self.set_table_widget(myresult, attr_names)
+        self.set_table_widget(myresult, column_names)
         
 
 
     def check_pet(self):
         cname = self.lineEdit_33.text()
-        sql = "SHOW COLUMNS FROM Pet"
-        mycursor.execute(sql)
-        myresult = mycursor.fetchall()
-        attr_names = []
-        # print(myresult)
-        for i in myresult:
-            attr_names.append(i[0])
 
         mycursor.execute(f"SELECT * FROM Pet WHERE Cname = '{cname}'")
+        column_names = [i[0] for i in mycursor.description]
         myresult = mycursor.fetchall()
-        self.set_table_widget(myresult, attr_names)
+        self.set_table_widget(myresult, column_names)
 
     def create_guild(self):
         self.textBrowser.clear()
@@ -233,16 +220,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def check_guild(self):
         self.textBrowser.clear()
         cname = self.lineEdit_20.text()
-        sql = "SHOW COLUMNS FROM Guild"
-        mycursor.execute(sql)
-        myresult = mycursor.fetchall()
-        attr_names = []
-        for i in myresult:
-            attr_names.append(i[0])
+        column_names = [i[0] for i in mycursor.description]
         try:
             mycursor.execute(f"SELECT * FROM Guild WHERE Cname='{cname}'")
             myresult = mycursor.fetchall()
-            self.set_table_widget(myresult, attr_names)
+            self.set_table_widget(myresult, column_names)
         except mysql.connector.Error as err:
             self.textBrowser.append(f"Something went wrong: {err}")
 
@@ -276,17 +258,34 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def sql_input(self):
-        try:
-            sql_str = str(self.textEdit.toPlainText())
-            mycursor.execute(sql_str)
-            
-            myresult = mycursor.fetchall()
-            for i in myresult:
-                print(i)
-        except mysql.connector.Error as err:
-            self.textBrowser.append(f"Something went wrong: {err}")
+        self.textBrowser.clear()
+        sql_str = str(self.textEdit.toPlainText())
+        first_word = sql_str.split()[0]
 
-    
+        if (first_word.lower() == "select"):
+            try:
+                sql = "SHOW COLUMNS FROM TASK"
+                mycursor.execute(sql)
+                myresult = mycursor.fetchall()
+                attr_names = []
+                for i in myresult:
+                    attr_names.append(i[0])
+
+                mycursor.execute(sql_str)
+                myresult = mycursor.fetchall()
+                column_names = [i[0] for i in mycursor.description]
+
+                self.set_table_widget(myresult, column_names)
+            except mysql.connector.Error as err:
+                self.textBrowser.append(f"Something went wrong: {err}")
+        else:
+            try:
+                mycursor.execute(sql_str)
+                self.textBrowser.append(
+                    str(mycursor.rowcount) + "record inserted.")
+            except mysql.connector.Error as err:
+                self.textBrowser.append(f"Something went wrong: {err}")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
