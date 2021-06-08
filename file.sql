@@ -36,68 +36,71 @@ CREATE TABLE `Account` (
 
 LOCK TABLES `Account` WRITE;
 /*!40000 ALTER TABLE `Account` DISABLE KEYS */;
-INSERT INTO `Account` VALUES ('elsa1999','pass_elsa','elsa@gmail.com'),('eva1999','pass_eva','eva@gmail.com'),('john1999','pass_john','john@gmail.com'),('mina','mina','mina@gmail.com'),('nana1999','pass_nana','nana@gmail.com'),('pan1999','pass_pan','pan@gmail.com');
 /*!40000 ALTER TABLE `Account` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Guild`
+-- Table structure for table `guild`
 --
 
-DROP TABLE IF EXISTS `Guild`;
+DROP TABLE IF EXISTS `guild`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Guild` (
+CREATE TABLE `guild` (
   `Gname` varchar(255) NOT NULL,
   `Address` varchar(255) DEFAULT NULL,
   `Level` int DEFAULT NULL,
   `Cname` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Gname`)
+  PRIMARY KEY (`Gname`),
+  KEY `Cname` (`Cname`),
+  CONSTRAINT `guild_ibfk_1` FOREIGN KEY (`Cname`) REFERENCES `Role` (`Cname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Guild`
+-- Dumping data for table `guild`
 --
 
-LOCK TABLES `Guild` WRITE;
-/*!40000 ALTER TABLE `Guild` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Guild` ENABLE KEYS */;
+LOCK TABLES `guild` WRITE;
+/*!40000 ALTER TABLE `guild` DISABLE KEYS */;
+/*!40000 ALTER TABLE `guild` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Pet`
+-- Table structure for table `pet`
 --
 
-DROP TABLE IF EXISTS `Pet`;
+DROP TABLE IF EXISTS `pet`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Pet` (
+CREATE TABLE `pet` (
   `Pid` int NOT NULL AUTO_INCREMENT,
   `Pname` varchar(255) DEFAULT NULL,
   `Hungry` int DEFAULT NULL,
   `Cname` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Pid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`Pid`),
+  KEY `Cname` (`Cname`),
+  CONSTRAINT `pet_ibfk_1` FOREIGN KEY (`Cname`) REFERENCES `Role` (`Cname`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Pet`
+-- Dumping data for table `pet`
 --
 
-LOCK TABLES `Pet` WRITE;
-/*!40000 ALTER TABLE `Pet` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Pet` ENABLE KEYS */;
+LOCK TABLES `pet` WRITE;
+/*!40000 ALTER TABLE `pet` DISABLE KEYS */;
+/*!40000 ALTER TABLE `pet` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Role`
+-- Table structure for table `role`
 --
 
-DROP TABLE IF EXISTS `Role`;
+DROP TABLE IF EXISTS `role`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Role` (
+CREATE TABLE `role` (
   `Cname` varchar(255) NOT NULL,
   `Occupation` varchar(255) DEFAULT NULL,
   `Speed` int DEFAULT NULL,
@@ -106,43 +109,48 @@ CREATE TABLE `Role` (
   `Power` int DEFAULT NULL,
   `Anumber` varchar(255) DEFAULT NULL,
   `Gname` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Cname`)
+  PRIMARY KEY (`Cname`),
+  KEY `Anumber` (`Anumber`),
+  KEY `Gname` (`Gname`),
+  CONSTRAINT `role_ibfk_1` FOREIGN KEY (`Anumber`) REFERENCES `Account` (`Account_number`),
+  CONSTRAINT `role_ibfk_2` FOREIGN KEY (`Gname`) REFERENCES `Guild` (`Gname`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Role`
+-- Dumping data for table `role`
 --
 
-LOCK TABLES `Role` WRITE;
-/*!40000 ALTER TABLE `Role` DISABLE KEYS */;
-INSERT INTO `Role` VALUES ('mina_second','pee',100,100,100,100,'mina','noob'),('mina_wolf','assassin',100,100,100,100,'mina','noob');
-/*!40000 ALTER TABLE `Role` ENABLE KEYS */;
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `Task`
+-- Table structure for table `task`
 --
 
-DROP TABLE IF EXISTS `Task`;
+DROP TABLE IF EXISTS `task`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `Task` (
+CREATE TABLE `task` (
   `Tid` int NOT NULL AUTO_INCREMENT,
   `Tname` varchar(255) DEFAULT NULL,
   `Reward` int DEFAULT NULL,
   `Cname` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`Tid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`Tid`),
+  KEY `Cname` (`Cname`),
+  CONSTRAINT `task_ibfk_1` FOREIGN KEY (`Cname`) REFERENCES `Role` (`Cname`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `Task`
+-- Dumping data for table `task`
 --
 
-LOCK TABLES `Task` WRITE;
-/*!40000 ALTER TABLE `Task` DISABLE KEYS */;
-/*!40000 ALTER TABLE `Task` ENABLE KEYS */;
+LOCK TABLES `task` WRITE;
+/*!40000 ALTER TABLE `task` DISABLE KEYS */;
+/*!40000 ALTER TABLE `task` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -154,4 +162,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-06-07  9:59:43
+-- Dump completed on 2021-06-08 17:10:30

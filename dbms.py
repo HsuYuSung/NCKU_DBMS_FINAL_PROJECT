@@ -1,5 +1,6 @@
 from logging import getLevelName
 from os import O_NDELAY
+from re import L, S
 import sys
 import mysql.connector
 from gui import Ui_MainWindow
@@ -73,7 +74,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
         self.on_binding_ui()
-
+        self.text_browser_init()
+    
+    def text_browser_init(self):
+        self.textBrowser.clear()
     
     def set_table_widget(self, data, attr_names):
         self.tableWidget.setRowCount(len(data))
@@ -98,6 +102,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_5.clicked.connect(self.create_guild)
         self.pushButton_6.clicked.connect(self.check_guild)
         self.pushButton_7.clicked.connect(self.create_account)
+        self.pushButton_8.clicked.connect(self.create_task)
+        self.pushButton_9.clicked.connect(self.create_pet)
     
     def sql_input(self):
         sql_str = str(self.textEdit.toPlainText())
@@ -199,7 +205,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         #     pet_id = int(pet_str)
         # except:
         #     print("please input integer")
-        cname = self.lineEdit_32.text()
+        cname = self.lineEdit_33.text()
         sql = "SHOW COLUMNS FROM Pet"
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
@@ -213,13 +219,63 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_table_widget(myresult, attr_names)
 
     def create_guild(self):
-        print('create_guild')
+        try:
+            cname = self.lineEdit_20.text()
+            sql = "INSERT INTO Guild (Gname, Address, Level, Cname) \
+                VALUES (%s, %s, %s, %s)"
+            Gname = self.lineEdit_5.text()
+            Address = self.lineEdit_10.text()
+            val = (Gname, Address, '1', cname)
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except:
+            self.textBrowser.append("create guild failed")
+
+        self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+
     
     def check_guild(self):
-        print('check_guild')
+        cname = self.lineEdit_20.text()
+        sql = "SHOW COLUMNS FROM Guild"
+        mycursor.execute(sql)
+        myresult = mycursor.fetchall()
+        attr_names = []
+        for i in myresult:
+            attr_names.append(i[0])
+            
+        # mycursor.execute(f"SELECT * FROM Guild WHERE Cname = '{cname}")
+        mycursor.execute(f"SELECT * FROM Guild")
+        myresult = mycursor.fetchall()
+        self.set_table_widget(myresult, attr_names)
     
+    def create_task(self):
+        try:
+            cname = self.lineEdit_32.text()
+            sql = "INSERT INTO Task (Tname, Reward, Cname) VALUES (%s, %s, %s)"
+            Tname = self.lineEdit_3.text()
+            val = (Tname, '100', cname)
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except:
+            self.textBrowser.append("insert task failed")
 
+        self.textBrowser.clear()
+        self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+    
+    def create_pet(self):
+        try:
+            cname = self.lineEdit_33.text()
+            sql = "INSERT INTO Pet (Pname, Hungry, Cname) VALUES (%s, %s, %s)"
+            Pname = self.lineEdit_4.text()
+            val = (Pname, '100', cname)
+            mycursor.execute(sql, val)
+            mydb.commit()
+        except:
+            self.textBrowser.append("insert Pet failed")
 
+        self.textBrowser.clear()
+        self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+    
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
