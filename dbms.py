@@ -104,14 +104,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_7.clicked.connect(self.create_account)
         self.pushButton_8.clicked.connect(self.create_task)
         self.pushButton_9.clicked.connect(self.create_pet)
-    
-    def sql_input(self):
-        sql_str = str(self.textEdit.toPlainText())
-        mycursor.execute(sql_str)
-
-        myresult = mycursor.fetchall()
-        for i in myresult:
-            print(i)
+        self.pushButton_10.clicked.connect(self.change_guild)
 
     def create_account(self):
         sql = "INSERT INTO Account (Account_number, Password, Email) VALUES (%s, %s, %s)"
@@ -169,10 +162,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             val = (cname, occupation, Speed, HP, MP, Power, account_number, Gname)
             mycursor.execute(sql, val)
             mydb.commit()
-        except:
-            print("insert failed")
-
-        print(mycursor.rowcount, "record inserted.")
+            self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+    
 
     def check_task(self):
         # task_str = 0
@@ -187,7 +180,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         mycursor.execute(sql)
         myresult = mycursor.fetchall()
         attr_names = []
-        # print(myresult)
         for i in myresult:
             attr_names.append(i[0])
 
@@ -199,12 +191,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 
     def check_pet(self):
-        # pet_str = 0
-        # try:
-        #     pet_str = self.lineEdit_4.text()
-        #     pet_id = int(pet_str)
-        # except:
-        #     print("please input integer")
         cname = self.lineEdit_33.text()
         sql = "SHOW COLUMNS FROM Pet"
         mycursor.execute(sql)
@@ -219,6 +205,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.set_table_widget(myresult, attr_names)
 
     def create_guild(self):
+        self.textBrowser.clear()
         try:
             cname = self.lineEdit_20.text()
             sql = "INSERT INTO Guild (Gname, Address, Level, Cname) \
@@ -228,13 +215,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             val = (Gname, Address, '1', cname)
             mycursor.execute(sql, val)
             mydb.commit()
-        except:
-            self.textBrowser.append("create guild failed")
-
+            self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+    
+    def change_guild(self):
+        self.textBrowser.clear()
+        try:
+            cname = self.lineEdit_11.text()
+            sql = f"UPDATE role set Gname='{cname}'"
+            mycursor.execute(sql)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+        
         self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
-
     
     def check_guild(self):
+        self.textBrowser.clear()
         cname = self.lineEdit_20.text()
         sql = "SHOW COLUMNS FROM Guild"
         mycursor.execute(sql)
@@ -242,13 +239,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         attr_names = []
         for i in myresult:
             attr_names.append(i[0])
-            
-        # mycursor.execute(f"SELECT * FROM Guild WHERE Cname = '{cname}")
-        mycursor.execute(f"SELECT * FROM Guild")
-        myresult = mycursor.fetchall()
-        self.set_table_widget(myresult, attr_names)
-    
+        try:
+            mycursor.execute(f"SELECT * FROM Guild WHERE Cname='{cname}'")
+            myresult = mycursor.fetchall()
+            self.set_table_widget(myresult, attr_names)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+
     def create_task(self):
+        self.textBrowser.clear()
         try:
             cname = self.lineEdit_32.text()
             sql = "INSERT INTO Task (Tname, Reward, Cname) VALUES (%s, %s, %s)"
@@ -256,13 +255,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             val = (Tname, '100', cname)
             mycursor.execute(sql, val)
             mydb.commit()
-        except:
-            self.textBrowser.append("insert task failed")
+            self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
 
-        self.textBrowser.clear()
-        self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+
     
     def create_pet(self):
+        self.textBrowser.clear()
         try:
             cname = self.lineEdit_33.text()
             sql = "INSERT INTO Pet (Pname, Hungry, Cname) VALUES (%s, %s, %s)"
@@ -270,11 +270,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             val = (Pname, '100', cname)
             mycursor.execute(sql, val)
             mydb.commit()
-        except:
-            self.textBrowser.append("insert Pet failed")
+            self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
 
-        self.textBrowser.clear()
-        self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
+
+    def sql_input(self):
+        try:
+            sql_str = str(self.textEdit.toPlainText())
+            mycursor.execute(sql_str)
+            
+            myresult = mycursor.fetchall()
+            for i in myresult:
+                print(i)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+
     
 
 if __name__ == '__main__':
