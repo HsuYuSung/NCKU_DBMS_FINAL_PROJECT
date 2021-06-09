@@ -17,7 +17,9 @@ contributed by <`徐郁淞 P76091543`>
 ![](gui_picture/GUI.png)
 
 ### 帳戶功能
-* ![](gui_picture/account.png)
+<p align="center">
+<img src="gui_picture/account.png" alt="drawing" width="400"/>
+</p>
 **創建帳戶**
 * BUTTON
   * 輸入帳號
@@ -52,7 +54,10 @@ INSERT INTO  Role (Cname, Occupation, Speed, HP, MP, Power, Anumber, Gname) VALU
 ```
 
 ### 公會功能
-* ![](gui_picture/guild.png)
+<p align="center">
+<img src="gui_picture/guild.png" alt="drawing" width="400"/>
+</p>
+
 **建立公會**
 * BUTTON
   * 輸入角色名字
@@ -107,7 +112,10 @@ SELECT * FROM Guild WHERE Cname = [角色名字]
 ```
 
 ### 任務功能
-* ![](gui_picture/task.png)
+<p align="center">
+<img src="gui_picture/task.png" alt="drawing" width="400"/>
+</p>
+
 **建立任務**
 * BUTTON
   * 輸入角色名字
@@ -141,7 +149,10 @@ SELECT * FROM Task WHERE Cname = [角色名字]
 ```
 
 ## 寵物功能
-* ![](gui_picture/pet.png)
+<p align="center">
+<img src="gui_picture/pet.png" alt="drawing" width="400"/>
+</p>
+
 **豢養寵物**
 * BUTTON
   * 輸入角色名字
