@@ -17,7 +17,7 @@ contributed by <`徐郁淞 P76091543`>
 ![](gui_picture/GUI.png)
 
 ### 帳戶功能
-![](gui_picture/account.png)
+* ![](gui_picture/account.png)
 **創建帳戶**
 * BUTTON
   * 輸入帳號
@@ -37,7 +37,6 @@ INSERT INTO Account (Account_number, Password, Email) VALUES ([帳號], [密碼]
 
 
 **創建角色**
-![](gui_picture/role.png)
 * BUTTON
   * 輸入帳號
   * 輸入角色名字
@@ -53,8 +52,8 @@ INSERT INTO  Role (Cname, Occupation, Speed, HP, MP, Power, Anumber, Gname) VALU
 ```
 
 ### 公會功能
+* ![](gui_picture/guild.png)
 **建立公會**
-![](gui_picture/guild.png)
 * BUTTON
   * 輸入角色名字
   * 輸入公會名稱
@@ -74,7 +73,6 @@ INSERT INTO Guild (Gname, Address, Level, Cname) VALUES ([公會名稱], [公會
 
 
 **加入公會**
-![](gui_picture/join_guild.png)
 * BUTTON
   * 輸入角色名字
   * 輸入公會名稱
@@ -92,7 +90,6 @@ UPDATA Role SET Gname=[公會名字] WHERE Cname=[角色名字]
 ```
 
 **查看公會**
-![](gui_picture/check_guild.png)
 * BUTTON
   * 輸入角色名字
   * 輸入公會名稱
@@ -110,7 +107,7 @@ SELECT * FROM Guild WHERE Cname = [角色名字]
 ```
 
 ### 任務功能
-![](gui_picture/create_task.png)
+* ![](gui_picture/task.png)
 **建立任務**
 * BUTTON
   * 輸入角色名字
@@ -144,7 +141,7 @@ SELECT * FROM Task WHERE Cname = [角色名字]
 ```
 
 ## 寵物功能
-![](gui_picture/create_pet.png)
+* ![](gui_picture/pet.png)
 **豢養寵物**
 * BUTTON
   * 輸入角色名字
