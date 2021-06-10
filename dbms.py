@@ -1,7 +1,5 @@
-from logging import getLevelName
-from os import O_NDELAY
-from re import L, S
 import sys
+import random
 import mysql.connector
 from gui import Ui_MainWindow
 from PyQt5 import QtWidgets, QtCore
@@ -105,8 +103,62 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_8.clicked.connect(self.create_task)
         self.pushButton_9.clicked.connect(self.create_pet)
         self.pushButton_10.clicked.connect(self.change_guild)
+        self.pushButton_11.clicked.connect(self.check_other_guild)
+        self.pushButton_12.clicked.connect(self.check_reward)
+        self.pushButton_13.clicked.connect(self.check_poor_pet)
+        self.pushButton_14.clicked.connect(self.guild_population)
+
+
+
+    def check_other_guild(self):
+        self.textBrowser.clear()
+        gname = self.lineEdit_34.text()
+        try:
+            sql = f"select Guild.Gname, Count(Role.Cname), AVG(HP), MAX(HP), MIN(HP), SUM(HP) \
+                from Guild, Role WHERE Guild.Gname = Role.Gname AND Guild.Gname NOT IN('{gname}') Group by Guild.gname"
+
+            mycursor.execute(sql)
+            myresult = mycursor.fetchall()
+            column_names = [i[0] for i in mycursor.description]
+            self.set_table_widget(myresult, column_names)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+
+    def check_reward(self):
+        self.textBrowser.clear()
+        try:
+            sql = f"select cname from Role where exists (select * from task where task.cname = role.cname AND Reward > 100)"
+            mycursor.execute(sql)
+            myresult = mycursor.fetchall()
+            column_names = [i[0] for i in mycursor.description]
+            self.set_table_widget(myresult, column_names)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+
+    def check_poor_pet(self):
+        self.textBrowser.clear()
+        try:
+            sql = f"select cname from Role where exists (select * from pet where pet.cname = role.cname AND Hungry < 200)"
+            mycursor.execute(sql)
+            myresult = mycursor.fetchall()
+            column_names = [i[0] for i in mycursor.description]
+            self.set_table_widget(myresult, column_names)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
+
+    def guild_population(self):
+        self.textBrowser.clear()
+        try:
+            sql = f"select COUNT(Cname), Gname FROM Role GROUP BY Gname HAVING COUNT(Cname) > 2"
+            mycursor.execute(sql)
+            myresult = mycursor.fetchall()
+            column_names = [i[0] for i in mycursor.description]
+            self.set_table_widget(myresult, column_names)
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
 
     def create_account(self):
+        self.textBrowser.clear()
         sql = "INSERT INTO Account (Account_number, Password, Email) VALUES (%s, %s, %s)"
         account_number = self.lineEdit_8.text()
         password = self.lineEdit_7.text()
@@ -115,12 +167,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         try:
             mycursor.execute(sql, val)
             mydb.commit()
-        except:
-            print("Duplicate entry " + val[0] + ", please change")
-
-        print(mycursor.rowcount, "record inserted.")
+            self.textBrowser.append(
+                str(mycursor.rowcount) + "record inserted.")
+        except mysql.connector.Error as err:
+            self.textBrowser.append(f"Something went wrong: {err}")
 
     def create_character(self):
+        self.textBrowser.clear()
         account_number = self.lineEdit_19.text()
         try:
             sql = f"SELECT * FROM Account WHERE Account_number='{account_number}'"
@@ -168,12 +221,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
 
     def check_task(self):
-        # task_str = 0
-        # try:
-        #     task_str = self.lineEdit_3.text()
-        #     task_id = int(task_str)
-        # except:
-        #     print("please input integer")
         cname = self.lineEdit_32.text()
         mycursor.execute(f"SELECT * FROM Task WHERE Cname = '{cname}'")
         column_names = [i[0] for i in mycursor.description]
@@ -209,8 +256,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def change_guild(self):
         self.textBrowser.clear()
         try:
-            cname = self.lineEdit_11.text()
-            sql = f"UPDATE role set Gname='{cname}'"
+            cname = self.lineEdit_20.text()
+            gname = self.lineEdit_11.text()
+            sql = f"UPDATE role set Gname='{gname}' where cname='{cname}'"
             mycursor.execute(sql)
         except mysql.connector.Error as err:
             self.textBrowser.append(f"Something went wrong: {err}")
@@ -219,11 +267,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     
     def check_guild(self):
         self.textBrowser.clear()
-        cname = self.lineEdit_20.text()
-        column_names = [i[0] for i in mycursor.description]
+        gname = self.lineEdit_6.text()
         try:
-            mycursor.execute(f"SELECT * FROM Guild WHERE Cname='{cname}'")
+            mycursor.execute(f"SELECT * FROM Role WHERE Gname IN ('{gname}')")
             myresult = mycursor.fetchall()
+            column_names = [i[0] for i in mycursor.description]
             self.set_table_widget(myresult, column_names)
         except mysql.connector.Error as err:
             self.textBrowser.append(f"Something went wrong: {err}")
@@ -234,7 +282,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             cname = self.lineEdit_32.text()
             sql = "INSERT INTO Task (Tname, Reward, Cname) VALUES (%s, %s, %s)"
             Tname = self.lineEdit_3.text()
-            val = (Tname, '100', cname)
+            reward = random.randint(200,5000)
+            val = (Tname, reward, cname)
             mycursor.execute(sql, val)
             mydb.commit()
             self.textBrowser.append(str(mycursor.rowcount)+ "record inserted.")
@@ -264,13 +313,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if (first_word.lower() == "select"):
             try:
-                sql = "SHOW COLUMNS FROM TASK"
-                mycursor.execute(sql)
-                myresult = mycursor.fetchall()
-                attr_names = []
-                for i in myresult:
-                    attr_names.append(i[0])
-
                 mycursor.execute(sql_str)
                 myresult = mycursor.fetchall()
                 column_names = [i[0] for i in mycursor.description]
@@ -281,6 +323,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             try:
                 mycursor.execute(sql_str)
+                mydb.commit()
                 self.textBrowser.append(
                     str(mycursor.rowcount) + "record inserted.")
             except mysql.connector.Error as err:

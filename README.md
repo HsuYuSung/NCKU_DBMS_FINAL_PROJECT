@@ -8,6 +8,10 @@ contributed by <`徐郁淞 P76091543`>
 * 分組
   * 一人一組
 
+## 應用場景
+* 建立遊戲帳戶資料庫
+* 使用遊戲資料庫來記錄各個帳號所創立的角色，街道的任務，公會系統等等。
+
 ## 實作軟體說明
 * 系統介面(GUI): `PyQt`
 * 系統資料庫：`MySQL`
@@ -20,6 +24,7 @@ contributed by <`徐郁淞 P76091543`>
 <p align="center">
 <img src="gui_picture/account.png" alt="drawing" width="400"/>
 </p>
+
 **創建帳戶**
 * BUTTON
   * 輸入帳號
@@ -45,7 +50,8 @@ INSERT INTO Account (Account_number, Password, Email) VALUES ([帳號], [密碼]
   * 輸入職業
 
 * QUERY
-需替換 `%s`
+  * 需替換 `%s`
+
 ```
 INSERT INTO  Role (Cname, Occupation, Speed, HP, MP, Power, Anumber, Gname) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 
@@ -66,8 +72,8 @@ INSERT INTO  Role (Cname, Occupation, Speed, HP, MP, Power, Anumber, Gname) VALU
   * 點擊右方`建立公會`
 
 * QUERY
-需替換 [公會名稱], [公會地址], [公會等級],[角色名字]
-(e.g. `'noob_guild'`, `'green_island'`, `'1'`, `'john'`)
+  * 需替換 [公會名稱], [公會地址], [公會等級],[角色名字]
+  * (e.g. `'noob_guild'`, `'green_island'`, `'1'`, `'john'`)
 
 ```
 INSERT INTO Guild (Gname, Address, Level, Cname) VALUES ([公會名稱], [公會地址], [公會等級],[角色名字])
@@ -84,8 +90,8 @@ INSERT INTO Guild (Gname, Address, Level, Cname) VALUES ([公會名稱], [公會
   * 點擊右方`加入公會`
 
 * QUERY
-需替換 [公會名字]、[角色名字]
-(e.g. `'noob_guild'`, `john`)
+  * 需替換 [公會名字]、[角色名字]
+  * (e.g. `'noob_guild'`, `john`)
 
 ```
 UPDATA Role SET Gname=[公會名字] WHERE Cname=[角色名字]
@@ -96,18 +102,17 @@ UPDATA Role SET Gname=[公會名字] WHERE Cname=[角色名字]
 
 **查看公會**
 * BUTTON
-  * 輸入角色名字
   * 輸入公會名稱
   * 點擊右方`查看公會`
 
 * QUERY
-需替換[角色名字]
-(e.g. 'john')
+  * 需替換[公會名字]
+  * (e.g. 'noob_guild')
 ```
-SELECT * FROM Guild WHERE Cname = [角色名字]
+SELECT * FROM Role WHERE Gname IN ([公會名字])"
 
 // e.g.
-// SELECT * FROM Guild WHERE Cname = [角色名字]
+// SELECT * FROM Role WHERE Gname IN ('noob_guild')
 // 
 ```
 
@@ -123,7 +128,7 @@ SELECT * FROM Guild WHERE Cname = [角色名字]
   * 點擊右方`建立任務`
 
 * QUERY
-需替換 `%s`
+  * 需替換 `%s`
 
 ```
 INSERT INTO Task (Tname, Reward, Cname) VALUES (%s, %s, %s)
@@ -138,8 +143,8 @@ INSERT INTO Task (Tname, Reward, Cname) VALUES (%s, %s, %s)
   * 點擊右方`查看任務`
 
 * QUERY
-需替換[角色名字]
-e.g.('john')
+  * 需替換[角色名字]
+  * e.g.('john')
 
 ```
 SELECT * FROM Task WHERE Cname = [角色名字]
@@ -160,7 +165,7 @@ SELECT * FROM Task WHERE Cname = [角色名字]
   * 點擊右方`豢養寵物`
 
 * QUERY
-需替換 `%s`
+  * 需替換 `%s`
 
 ```
 INSERT INTO Pet (Pname, Hungry, Cname) VALUES (%s, %s, %s)
@@ -175,8 +180,8 @@ INSERT INTO Pet (Pname, Hungry, Cname) VALUES (%s, %s, %s)
   * 點擊右方`查看寵物`
 
 * QUERY
-需替換[寵物名字]
-e.g.('john')
+  * 需替換[寵物名字]
+  * e.g.('john')
 
 ```
 SELECT * FROM Pet WHERE Cname = [寵物名字]
@@ -184,3 +189,50 @@ SELECT * FROM Pet WHERE Cname = [寵物名字]
 // e.g.
 // SELECT * FROM Pet WHERE Cname = 'john'
 ```
+
+## Complex queries in SQL 
+<p align="center">
+<img src="gui_picture/advance.png" alt="drawing" width="400"/>
+</p>
+
+* 查看其他公會的人數,平均血量,最大血量,最小血量,全體總血量
+
+```
+select Guild.Gname, Count(Role.Cname), AVG(HP), MAX(HP), MIN(HP),SUM(HP) from Guild, Role WHERE Guild.Gname=Role.Gname AND Guild.Gname NOT IN ('gura') group by guild.gname;
+```
+
+* 查看哪些角色有接報酬大於 1000 的任務
+```
+select cname from Role where exists (select * from task where Reward > 1000);
+```
+
+* 查看哪些角色都讓自己的寵物挨餓
+```
+select cname from Role where not exists (select * from pet where Hungry > 200);
+```
+
+* 查看公會人數大於 10 人的公會人數
+
+```
+select COUNT(Cname), Gname FROM Role GROUP BY Gname HAVING COUNT(Cname) > 2;
+```
+
+## ER diagram
+![](database_Diagram_final.png)
+
+## 第三正規化後的 Relational Schema
+![](relation_schema.png)
+* 說明意義和關係
+  1. 帳戶(Account):
+     * 一個帳戶可建立多個角色(Role)
+  2. 玩家角色(Role):
+     * 每個角色可擁有寵物(Pet)以及任務(Task)，每個角色可管理參與以及管理公會 
+  3. 任務(Task)
+     * 每個任務可被一個角色(Role)所擁有
+  4. 寵物(Pet)
+     * 每個寵物可被一個角色(Role)所擁有
+  5. 公會(Guild)
+     * 公會可被一個玩家角色(Role)管理，可以有多個玩家角色(Role)參與公會
+
+
+
